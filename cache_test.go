@@ -7,9 +7,6 @@ import (
 	"strconv"
 )
 
-func simple() {
-	
-}
 
 func TestCache_Add(t *testing.T) {
 	gc := New(DefaultExpiration)
@@ -101,13 +98,11 @@ func TestCache_Flush(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	gc := New(3 * time.Second)
-	b := gc.SetDefault("lang", "php")
-	assert.True(t, b)
+	gc.SetDefault("lang", "php")
 }
 func TestNewDefault(t *testing.T) {
 	gc := NewDefault()
-	b := gc.SetDefault("lang", "python")
-	assert.True(t, b)
+	gc.SetDefault("lang", "python")
 }
 func TestCache_Info(t *testing.T) {
 	gc := NewDefault()
