@@ -152,3 +152,13 @@ func BenchmarkCache_Set(b *testing.B) {
 		gc.Set("test" + strconv.Itoa(i), i, time.Second * 100)
 	}
 }
+
+
+func TestCache(t *testing.T) {
+	gc := NewDefault()
+	gc2 := NewDefault()
+	gc.SetDefault("lang", "golang")
+	v, err := gc2.Get("lang")
+	assert.Nil(t, err)
+	assert.Equal(t, "golang", v)
+}

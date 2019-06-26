@@ -1,7 +1,7 @@
 package goCache
 
 import (
-	"github.com/ThreeKing2018/goCache"
+	//"github.com/ThreeKing2018/goCache"
 	"time"
 	"log"
 	"fmt"
@@ -9,7 +9,7 @@ import (
 
 func Example() {
 	//默认new
-	c := goCache.NewDefault()
+	c := NewDefault()
 	//设置缓存键, 若键存在则覆盖
 	c.Set("nation", "free_nation", 5 * time.Minute)
 	//设置缓存键,与set不同,若键存在则false,代表存储失败; 返回true则存储成功,
@@ -33,7 +33,7 @@ func Example() {
 	c.Delete("lang")
 
 	//默认时间为1小时
-	cache := goCache.New(1 * time.Hour)
+	cache := New(1 * time.Hour)
 	//设置键, 使用goCache.New设置的1小时过期时间
 	cache.SetDefault("lang", "php")
 
