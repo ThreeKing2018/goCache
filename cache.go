@@ -27,7 +27,7 @@ func (m item) isExpired() bool {
 	return time.Now().UnixNano() > m.Expired
 }
 
-type cache struct {
+type Cache struct {
 	*goCache
 }
 
@@ -44,7 +44,7 @@ func New(d time.Duration) goCacher {
 		DefaultExpiration: d,
 		items:             m,
 	}
-	cc := &cache{
+	cc := &Cache{
 		goCache: c,
 	}
 	return cc
@@ -58,7 +58,7 @@ func NewDefault() goCacher {
 //value 任意类型数据
 //ttl 缓存时间
 //如果键值存在则覆盖,重新设置时间
-func (c *cache) Set(key string, value interface{}, ttl time.Duration) {
+func (c *Cache) Set(key string, value interface{}, ttl time.Duration) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	var ex int64
@@ -78,7 +78,7 @@ func (c *cache) Set(key string, value interface{}, ttl time.Duration) {
 //value 任意类型数据
 //ttl 缓存时间
 //如果键值存在则覆盖,重新设置时间
-func (c *cache) SetDefault(key string, value interface{}) {
+func (c *Cache) SetDefault(key string, value interface{}) {
 	c.Set(key, value, DefaultExpiration)
 }
 //缓存某值
@@ -86,7 +86,7 @@ func (c *cache) SetDefault(key string, value interface{}) {
 //value 任意类型数据
 //ttl 缓存时间
 //如果键值未过期无法写入
-func (c *cache) Add(key string, value interface{}, ttl time.Duration) error {
+func (c *Cache) Add(key string, value interface{}, ttl time.Duration) error {
 	if c.Has(key) {
 		return fmt.Errorf(KeyExists, key)
 	}
@@ -94,11 +94,11 @@ func (c *cache) Add(key string, value interface{}, ttl time.Duration) error {
 	return nil
 }
 //默认操作
-func (c *cache) AddDefault(key string, value interface{}) error {
+func (c *Cache) AddDefault(key string, value interface{}) error {
 	return c.Add(key, value, DefaultExpiration)
 }
 //获取某键值
-func (c *cache) Get(key string) (reply interface{}, err error) {
+func (c *Cache) Get(key string) (reply interface{}, err error) {
 	item, isExist := c.items[key]
 	if !isExist {
 		err = errors.New(KeyNotExists)
@@ -116,7 +116,7 @@ func (c *cache) Get(key string) (reply interface{}, err error) {
 }
 //获取某键详情
 //值, 过期, 是否存在
-func (c *cache) Info(key string) (interface{}, time.Time, bool) {
+func (c *Cache) Info(key string) (interface{}, time.Time, bool) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	item, found := c.items[key]
@@ -133,7 +133,7 @@ func (c *cache) Info(key string) (interface{}, time.Time, bool) {
 }
 //获取整个缓存项
 //未过期的项
-func (c *cache) Items() map[string]item {
+func (c *Cache) Items() map[string]item {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	items := make(map[string]item, len(c.items))
@@ -148,7 +148,7 @@ func (c *cache) Items() map[string]item {
 	return items
 }
 //获取缓存多少项
-func (c *cache) Count() int {
+func (c *Cache) Count() int {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	var count int
@@ -160,18 +160,18 @@ func (c *cache) Count() int {
 	return count
 }
 //刷新缓存,相当于清空
-func (c *cache) Flush() {
+func (c *Cache) Flush() {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	c.items = map[string]item{}
 }
 //删除某键值
-func (c *cache) Delete(key string) bool {
+func (c *Cache) Delete(key string) bool {
 	delete(c.items, key)
 	return true
 }
 //判断键是否存在
-func (c *cache) Has(key string) bool {
+func (c *Cache) Has(key string) bool {
 	item, found := c.items[key]
 	if !found {
 		return false
