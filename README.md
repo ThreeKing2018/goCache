@@ -1,7 +1,7 @@
 # goCache
 
 ## 文档
-`https://godoc.org/github.com/ThreeKing2018/goCache`
+[goCache文档](https://godoc.org/github.com/ThreeKing2018/goCache)
 
 ## 获取
 `go get github.com/ThreeKing2018/goCache`
