@@ -40,8 +40,13 @@ type goCache struct {
 	lock              sync.RWMutex
 }
 
+//使用默认实例对象
+func NewDefault() goCacher {
+	return New(DefaultExpiration)
+}
+
 //实例对象
-func New(d time.Duration) GoCacher {
+func New(d time.Duration) goCacher {
 	m := make(map[string]item)
 	c := &goCache{
 		DefaultExpiration: d,
@@ -70,10 +75,7 @@ func clockClear(c *Cache) {
 		}
 	}
 }
-//使用默认实例对象
-func NewDefault() GoCacher {
-	return New(DefaultExpiration)
-}
+
 //缓存某值
 //key 值
 //value 任意类型数据

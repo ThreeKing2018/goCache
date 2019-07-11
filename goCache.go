@@ -2,7 +2,7 @@ package goCache
 
 import "time"
 
-type GoCacher interface {
+type goCacher interface {
 	Set(key string, value interface{}, ttl time.Duration) //设置键值
 	SetDefault(key string, value interface{})//设置键值,使用默认值
 	Add(key string, value interface{}, ttl time.Duration) error //添加键值
