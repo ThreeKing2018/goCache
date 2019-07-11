@@ -41,7 +41,7 @@ type goCache struct {
 }
 
 //实例对象
-func New(d time.Duration) goCacher {
+func New(d time.Duration) GoCacher {
 	m := make(map[string]item)
 	c := &goCache{
 		DefaultExpiration: d,
@@ -71,7 +71,7 @@ func clockClear(c *Cache) {
 	}
 }
 //使用默认实例对象
-func NewDefault() goCacher {
+func NewDefault() GoCacher {
 	return New(DefaultExpiration)
 }
 //缓存某值
