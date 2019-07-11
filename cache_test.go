@@ -5,6 +5,7 @@ import (
 	"time"
 	"github.com/stretchr/testify/assert"
 	"strconv"
+	"fmt"
 )
 
 
@@ -156,9 +157,15 @@ func BenchmarkCache_Set(b *testing.B) {
 
 func TestCache(t *testing.T) {
 	gc := NewDefault()
-	gc2 := NewDefault()
+	//gc2 := NewDefault()
 	gc.SetDefault("lang", "golang")
-	v, err := gc2.Get("lang")
+	v, err := gc.Get("lang")
 	assert.Nil(t, err)
 	assert.Equal(t, "golang", v)
+}
+func TestClock(t *testing.T) {
+	c := New(time.Second * 1)
+	c.AddDefault("aa", 100)
+	<- time.After(time.Second * 5)
+	fmt.Println(c.Items())
 }

@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 	"fmt"
+	"runtime"
 )
 
 const (
@@ -12,6 +13,7 @@ const (
 	KeyNotExists = "key is not exists"
 	KeyExpired = "key is expired"
 	KeyExists = "key %s already exists"
+	clearInterval time.Duration = 3 //定义清除过期元素
 )
 
 type item struct {
@@ -29,6 +31,7 @@ func (m item) isExpired() bool {
 
 type Cache struct {
 	*goCache
+	stop chan bool
 }
 
 type goCache struct {
@@ -47,7 +50,25 @@ func New(d time.Duration) goCacher {
 	cc := &Cache{
 		goCache: c,
 	}
+	go clockClear(cc)
+	runtime.SetFinalizer(cc, stopClock) //在对象被GC进程选中并从内存中移除前，SetFinalizer都不会执行，即使程序正常结束或者发生错误
 	return cc
+}
+//发送停止信号
+func stopClock(c *Cache) {
+	c.stop <- true
+}
+//定时清除过期元素
+func clockClear(c *Cache) {
+	ticker := time.NewTicker(time.Second * clearInterval)
+	for {
+		select {
+		case <-ticker.C:
+			c.DeleteExpired()
+		case <-c.stop:
+			ticker.Stop()
+		}
+	}
 }
 //使用默认实例对象
 func NewDefault() goCacher {
@@ -106,7 +127,6 @@ func (c *Cache) Get(key string) (reply interface{}, err error) {
 	}
 	if item.Expired > 0 {
 		if item.isExpired() {
-			c.Delete(key)
 			err = errors.New(KeyExpired)
 			return
 		}
@@ -169,6 +189,16 @@ func (c *Cache) Flush() {
 func (c *Cache) Delete(key string) bool {
 	delete(c.items, key)
 	return true
+}
+//删除过期的值
+func (c *Cache) DeleteExpired() {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	for k, v := range c.items {
+		if v.Expired > 0 && v.isExpired() {
+			c.Delete(k)
+		}
+	}
 }
 //判断键是否存在
 func (c *Cache) Has(key string) bool {

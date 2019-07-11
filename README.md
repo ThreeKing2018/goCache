@@ -1,5 +1,10 @@
 # goCache
 
+## 特点
+- 支持任意类型存储
+- 使用简单
+- 自动实现过期回收
+
 ## 文档
 [goCache文档](https://godoc.org/github.com/ThreeKing2018/goCache)
 
