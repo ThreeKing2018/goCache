@@ -64,3 +64,6 @@ BenchmarkCache_Set-4     1000000              1005 ns/op             232 B/op   
 PASS
 
 ```
+
+## 参考
+- https://github.com/patrickmn/go-cache
