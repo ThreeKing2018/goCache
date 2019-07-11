@@ -41,12 +41,12 @@ type goCache struct {
 }
 
 //使用默认实例对象
-func NewDefault() goCacher {
+func NewDefault() GoCacher {
 	return New(DefaultExpiration)
 }
 
 //实例对象
-func New(d time.Duration) goCacher {
+func New(d time.Duration) GoCacher {
 	m := make(map[string]item)
 	c := &goCache{
 		DefaultExpiration: d,
